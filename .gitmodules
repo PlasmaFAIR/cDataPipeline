@@ -1,0 +1,3 @@
+[submodule "external_packages/cppDataPipeline"]
+	path = external_packages/cppDataPipeline
+	url = git@github.com:FAIRDataPipeline/cppDataPipeline
