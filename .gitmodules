@@ -1,3 +1,4 @@
 [submodule "external_packages/cppDataPipeline"]
 	path = external_packages/cppDataPipeline
-	url = git@github.com:FAIRDataPipeline/cppDataPipeline
+	url = git@github.com:PlasmaFAIR/cppDataPipeline
+    branch = cmake_updates
