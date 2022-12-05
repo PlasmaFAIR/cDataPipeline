@@ -2,3 +2,6 @@
 	path = external_packages/cppDataPipeline
 	url = git@github.com:PlasmaFAIR/cppDataPipeline
     branch = cmake_updates
+[submodule "tests/integrated_tests/cDataPipelineSimpleModel"]
+	path = tests/integrated_tests/cDataPipelineSimpleModel
+	url = git@github.com:PlasmaFAIR/cDataPipelineSimpleModel
