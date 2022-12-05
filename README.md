@@ -60,5 +60,9 @@ You may also need to set the registry token, which should be at
 To build and run tests:
 
 ```bash
-$ sudo cmake --build build --target tests
+$ cmake --build build --target tests
 ```
+
+To ensure everything worked, navigate to the URL reported when you called
+`fair registry start` using your browser. It should report a data product named
+`SEIRS_Model/results/model_output/c`.
