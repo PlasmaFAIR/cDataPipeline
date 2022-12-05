@@ -60,6 +60,7 @@ You may also need to set the registry token, which should be at
 To build and run tests:
 
 ```bash
+$ cmake --build build --target build-tests # N.B. This may not be needed
 $ cmake --build build --target tests
 ```
 
