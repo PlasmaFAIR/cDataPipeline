@@ -9,6 +9,8 @@ project(
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
+option(C_DATA_PIPELINE_MAKE_TESTS "Build tests for cDataPipeline" ON)
+
 add_library(cDataPipeline SHARED ./include/fdp/fdp.h ./src/fdp_c_bindings.cxx)
 add_library(cDataPipeline::cDataPipeline ALIAS cDataPipeline)
 target_compile_features(cDataPipeline PRIVATE cxx_std_11)
@@ -65,3 +67,30 @@ install(
     DESTINATION 
         ${CMAKE_INSTALL_LIBDIR}/cmake/cDataPipeline
 )
+
+# Tests
+string(COMPARE EQUAL "${PROJECT_NAME}" "${CMAKE_PROJECT_NAME}" C_DATA_PIPELINE_IS_TOP_LEVEL)
+if(C_DATA_PIPELINE_IS_TOP_LEVEL AND C_DATA_PIPELINE_MAKE_TESTS)
+    message(STATUS "Adding tests")
+    enable_testing()
+    add_custom_target(build-unit-tests)
+    add_custom_target(build-integrated-tests)
+    add_custom_target(build-tests)
+    add_dependencies(build-tests build-unit-tests build-integrated-tests)
+    
+    # Include subdirectory 'tests'
+    # Tests within this subdirectory must add themselves as dependencies
+    # to the target build-unit-tests or build-integrated-tests
+    add_subdirectory(tests EXCLUDE_FROM_ALL)
+
+    # add_custom_target(
+    #    run-integrated-tests
+    #    COMMAND ctest -R cDataPipeline_integrated_tests --output-on-failure
+    #)
+    #add_custom_target(run-tests)
+    #add_dependencies(run-tests run-integrated-tests)
+
+    add_custom_target(tests)
+    #add_dependencies(tests run-tests build-tests)
+    add_dependencies(tests build-tests)
+endif()

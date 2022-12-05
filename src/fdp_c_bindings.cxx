@@ -1,5 +1,4 @@
 #include <string>
-#include <algorithm>
 #include <map>
 
 #include <ghc/filesystem.hpp>
@@ -66,8 +65,8 @@ FDP_ERR_T fdp_init(
     return exception_to_err_code(
         FDP::DataPipeline::construct,
         _datapipeline,
-        config_path,
-        script_path,
+        std::string(config_path),
+        std::string(script_path),
         _token
     );
 }
@@ -101,8 +100,7 @@ FDP_ERR_T _fdp_link(F&& f, const char* path, char* output){
     if(err){
         return err;
     } else {
-        std::string output_str = output_path.string();
-        std::copy(output_str.begin(), output_str.end(), output);
+        strcpy(output, output_path.c_str());
         return FDP_ERR_NONE;
     }
 }
