@@ -70,22 +70,27 @@ install(
 string(COMPARE EQUAL "${PROJECT_NAME}" "${CMAKE_PROJECT_NAME}" C_DATA_PIPELINE_IS_TOP_LEVEL)
 if(C_DATA_PIPELINE_IS_TOP_LEVEL)
     enable_testing()
+
     add_custom_target(build-unit-tests)
     add_custom_target(build-integrated-tests)
-    add_custom_target(build-tests)
-    add_dependencies(build-tests build-unit-tests build-integrated-tests)
-    
     add_custom_target(run-unit-tests)
     add_custom_target(run-integrated-tests)
-    add_custom_target(run-tests)
-    add_dependencies(run-unit-tests build-unit-tests)
-    add_dependencies(run-integrated-tests build-integrated-tests)
-    add_dependencies(run-tests run-unit-tests run-integrated-tests)
 
     # Include subdirectory 'tests'
     # Tests within this subdirectory must add themselves as dependencies
-    # to the target build-unit-tests or build-integrated-tests
+    # to the targets listed above
     add_subdirectory(tests EXCLUDE_FROM_ALL)
+
+    # Manage dependencies
+    add_dependencies(run-unit-tests build-unit-tests)
+    add_dependencies(run-integrated-tests build-integrated-tests)
+
+    # Add nice targets for the user
+    add_custom_target(build-tests)
+    add_dependencies(build-tests build-unit-tests build-integrated-tests)
+
+    add_custom_target(run-tests)
+    add_dependencies(run-tests run-unit-tests run-integrated-tests)
 
     add_custom_target(tests)
     add_dependencies(tests run-tests)
