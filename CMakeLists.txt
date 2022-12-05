@@ -78,19 +78,19 @@ if(C_DATA_PIPELINE_IS_TOP_LEVEL AND C_DATA_PIPELINE_MAKE_TESTS)
     add_custom_target(build-tests)
     add_dependencies(build-tests build-unit-tests build-integrated-tests)
     
+    add_custom_target(run-unit-tests)
+    add_custom_target(run-integrated-tests)
+    add_custom_target(run-tests)
+    add_dependencies(run-unit-tests build-unit-tests)
+    add_dependencies(run-integrated-tests build-integrated-tests)
+    add_dependencies(run-tests run-unit-tests run-integrated-tests)
+
+    add_custom_target(tests)
+    add_dependencies(tests run-tests)
+
     # Include subdirectory 'tests'
     # Tests within this subdirectory must add themselves as dependencies
     # to the target build-unit-tests or build-integrated-tests
     add_subdirectory(tests EXCLUDE_FROM_ALL)
 
-    # add_custom_target(
-    #    run-integrated-tests
-    #    COMMAND ctest -R cDataPipeline_integrated_tests --output-on-failure
-    #)
-    #add_custom_target(run-tests)
-    #add_dependencies(run-tests run-integrated-tests)
-
-    add_custom_target(tests)
-    #add_dependencies(tests run-tests build-tests)
-    add_dependencies(tests build-tests)
 endif()

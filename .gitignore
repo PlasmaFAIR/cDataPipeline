@@ -39,3 +39,9 @@ install_manifest.txt
 Makefile
 MANIFEST
 CTestTestfile.cmake
+
+# FAIR Data Pipeline
+.fair
+
+# vim
+*swp
