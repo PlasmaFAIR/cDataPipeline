@@ -40,4 +40,5 @@ add_custom_target(
         ctest -R cDataPipeline-Integrated-SimpleModel --output-on-failure
 )
 
+add_dependencies(run-simple-model cSimpleModel)
 add_dependencies(run-integrated-tests run-simple-model)
