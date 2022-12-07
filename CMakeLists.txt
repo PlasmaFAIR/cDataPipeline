@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.13)
 project(
-    "cDataPipeline"
+    "fdpapic"
     VERSION 0.1.0
     DESCRIPTION "C API of the FAIR Data Pipeline"
     LANGUAGES C CXX
@@ -9,24 +9,24 @@ project(
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-add_library(cDataPipeline SHARED ./include/fdp/fdp.h ./src/fdp_c_bindings.cxx)
-add_library(cDataPipeline::cDataPipeline ALIAS cDataPipeline)
-target_compile_features(cDataPipeline PRIVATE cxx_std_11)
+add_library(fdpapic ./include/fdp/fdp.h ./src/fdp_c_bindings.cxx)
+add_library(fdpapi::fdpapic ALIAS fdpapic)
+target_compile_features(fdpapic PRIVATE cxx_std_11)
 target_include_directories(
-    cDataPipeline 
+    fdpapic 
     PUBLIC
-    $<BUILD_INTERFACE:${cDataPipeline_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${fdpapic_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 # Uses cppDataPipeline as a dependency to build the C API
 add_subdirectory("external_packages/cppDataPipeline")
-target_link_libraries(cDataPipeline PRIVATE cppDataPipeline::cppDataPipeline)
+target_link_libraries(fdpapic PRIVATE fdpapi::fdpapi)
 
 # Set rules for installing targets
-set(cDataPipeline_targets cDataPipeline)
-install(TARGETS ${cDataPipeline_targets}
-        EXPORT cDataPipelineTargets
+set(fdpapic_targets fdpapic)
+install(TARGETS ${fdpapic_targets}
+        EXPORT fdpapicTargets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -35,10 +35,10 @@ install(TARGETS ${cDataPipeline_targets}
 
 # Install export file, which contains code to allow other projects to import this project
 install(
-    EXPORT cDataPipelineTargets
-    FILE cDataPipelineTargets.cmake
-    NAMESPACE cDataPipeline::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cDataPipeline
+    EXPORT fdpapicTargets
+    FILE fdpapicTargets.cmake
+    NAMESPACE fdpapi::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapic
 )
 
 # Install this project's include dir, so projects importing it can access it
@@ -46,13 +46,13 @@ install(DIRECTORY ./include DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Create files that allow installed project to be discovered using find_package
 configure_package_config_file(
-    "${PROJECT_SOURCE_DIR}/cmake/cDataPipelineConfig.cmake.in"
-    "${PROJECT_BINARY_DIR}/cDataPipelineConfig.cmake"
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cDataPipeline
+    "${PROJECT_SOURCE_DIR}/cmake/fdpapicConfig.cmake.in"
+    "${PROJECT_BINARY_DIR}/fdpapicConfig.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapic
 )
 
 write_basic_package_version_file(
-    "${PROJECT_BINARY_DIR}/cDataPipelineConfigVersion.cmake"
+    "${PROJECT_BINARY_DIR}/fdpapicConfigVersion.cmake"
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY SameMinorVersion
 )
@@ -60,15 +60,28 @@ write_basic_package_version_file(
 # Specify where to install the config files we generated
 install(
     FILES 
-        "${PROJECT_BINARY_DIR}/cDataPipelineConfig.cmake"
-        "${PROJECT_BINARY_DIR}/cDataPipelineConfigVersion.cmake"
+        "${PROJECT_BINARY_DIR}/fdpapicConfig.cmake"
+        "${PROJECT_BINARY_DIR}/fdpapicConfigVersion.cmake"
     DESTINATION 
-        ${CMAKE_INSTALL_LIBDIR}/cmake/cDataPipeline
+        ${CMAKE_INSTALL_LIBDIR}/cmake/fdpapic
 )
 
+# Configure the .in pkg-config file and install
+CONFIGURE_FILE(
+    ${PROJECT_SOURCE_DIR}/cmake/fdpapic.pc.in ${PROJECT_BINARY_DIR}/fdpapic.pc @ONLY
+)
+
+INSTALL(
+    FILES 
+        ${PROJECT_BINARY_DIR}/fdpapic.pc
+    DESTINATION
+        ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
+)
+
+
 # Tests
-string(COMPARE EQUAL "${PROJECT_NAME}" "${CMAKE_PROJECT_NAME}" C_DATA_PIPELINE_IS_TOP_LEVEL)
-if(C_DATA_PIPELINE_IS_TOP_LEVEL)
+string(COMPARE EQUAL "${PROJECT_NAME}" "${CMAKE_PROJECT_NAME}" FDPAPIC_IS_TOP_LEVEL)
+if(FDPAPIC_IS_TOP_LEVEL)
     enable_testing()
 
     add_custom_target(build-unit-tests)
